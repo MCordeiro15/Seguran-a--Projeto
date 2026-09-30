@@ -1,0 +1,12 @@
+Options -Indexes
+ServerSignature Off
+
+<IfModule mod_headers.c>
+    Header always unset X-Powered-By
+    Header always set X-Content-Type-Options "nosniff"
+</IfModule>
+
+# Bloquear ficheiros ocultos e de backup
+<FilesMatch "(^\.|\.(bak|old|sql|log|ini|sh|swp)$|~$)">
+    Require all denied
+</FilesMatch>

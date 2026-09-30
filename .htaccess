@@ -1,0 +1,16 @@
+# Caso o projeto inteiro seja colocado no htdocs (XAMPP/MAMP), só a pasta
+# public/ fica acessível. config/, includes/ e database/ ficam bloqueadas.
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^(config|includes|database)(/|$) - [F,L]
+    RewriteCond %{REQUEST_URI} !/public/
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+<IfModule !mod_rewrite.c>
+    <FilesMatch ".*">
+        Require all denied
+    </FilesMatch>
+</IfModule>
