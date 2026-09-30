@@ -28,8 +28,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $utilizador = $st->fetch();
 
         if ($utilizador === false) {
-            // Gasta o mesmo tempo que uma verificação real, para não revelar
-            // pela latência se a conta existe (timing attack / enumeração).
             password_hash($password, PASSWORD_ALGO, PASSWORD_OPCOES);
             $valido = false;
         } else {
@@ -41,7 +39,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($valido) {
             $id = (int) $utilizador['id'];
 
-            // Atualiza o hash se o algoritmo/custo tiver mudado desde o registo.
             if (password_needs_rehash($utilizador['password_hash'], PASSWORD_ALGO, PASSWORD_OPCOES)) {
                 db()->prepare('UPDATE utilizadores SET password_hash = ? WHERE id = ?')
                     ->execute([password_hash($password, PASSWORD_ALGO, PASSWORD_OPCOES), $id]);
@@ -57,7 +54,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             redirecionar('dashboard.php');
         }
 
-        // Mensagem única: não distingue "utilizador inexistente" de "palavra-passe errada".
         $erros[] = 'Credenciais inválidas.';
     }
 }

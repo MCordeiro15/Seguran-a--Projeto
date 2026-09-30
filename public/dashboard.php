@@ -9,7 +9,6 @@ $st = db()->prepare('SELECT username, email, criado_em FROM utilizadores WHERE i
 $st->execute([$_SESSION['uid']]);
 $utilizador = $st->fetch();
 
-// A conta pode ter sido apagada enquanto a sessão estava ativa.
 if ($utilizador === false) {
     terminar_sessao();
     redirecionar('login.php');
@@ -31,7 +30,6 @@ layout_inicio('Área reservada');
     <dd><?= $loginAnterior !== null ? e((string) $loginAnterior) : 'Primeiro acesso' ?></dd>
 </dl>
 
-<!-- Logout por POST com token CSRF: um site externo não consegue terminar a sessão -->
 <form method="post" action="logout.php">
     <?= csrf_campo() ?>
     <button type="submit" class="secundario">Terminar sessão</button>

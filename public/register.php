@@ -34,12 +34,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if ($ex->getCode() !== '23000') {
                     throw $ex;
                 }
-                // Mensagem genérica: não indicar qual dos campos já existe.
                 $erros[] = 'Não foi possível criar a conta com esses dados. Escolha outro nome de utilizador ou email.';
             }
 
-            // Só contam para o limite os pedidos que chegam a tentar criar a conta,
-            // para que erros de preenchimento não bloqueiem o utilizador.
             registar_tentativa('registo', $email, !$erros);
         }
 
@@ -61,7 +58,6 @@ layout_inicio('Registo');
 <form method="post" action="register.php" autocomplete="on" novalidate>
     <?= csrf_campo() ?>
 
-    <!-- Honeypot: invisível para humanos, bots tendem a preenchê-lo -->
     <div class="honeypot" aria-hidden="true">
         <label for="website">Website</label>
         <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">

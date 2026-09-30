@@ -1,20 +1,10 @@
--- =====================================================================
---  Base de dados do projeto de Segurança Web
---  Executar como root:  mysql -u root -p < database/schema.sql
--- =====================================================================
-
 CREATE DATABASE IF NOT EXISTS seguranca_web
     CHARACTER SET utf8mb4
     COLLATE utf8mb4_unicode_ci;
 
 USE seguranca_web;
 
--- ---------------------------------------------------------------------
--- Utilizadores registados
---  * A collation _ci torna os UNIQUE insensíveis a maiúsculas/minúsculas,
---    impedindo contas "Admin" e "admin" em simultâneo.
---  * A palavra-passe NUNCA é guardada: apenas o hash Argon2id/bcrypt.
--- ---------------------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS utilizadores (
     id             INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     username       VARCHAR(30)  NOT NULL,
@@ -26,9 +16,6 @@ CREATE TABLE IF NOT EXISTS utilizadores (
     UNIQUE KEY uq_email (email)
 ) ENGINE=InnoDB;
 
--- ---------------------------------------------------------------------
--- Registo de tentativas de login/registo (proteção contra força bruta)
--- ---------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS tentativas (
     id             BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     tipo           ENUM('login', 'registo') NOT NULL,
@@ -40,11 +27,6 @@ CREATE TABLE IF NOT EXISTS tentativas (
     KEY idx_identificador (tipo, identificador, criado_em)
 ) ENGINE=InnoDB;
 
--- ---------------------------------------------------------------------
--- Utilizador da aplicação com privilégios mínimos
--- (sem DROP, ALTER, CREATE, GRANT, FILE...)
--- ALTERE a palavra-passe e atualize config/config.php em conformidade.
--- ---------------------------------------------------------------------
 CREATE USER IF NOT EXISTS 'segweb_app'@'localhost' IDENTIFIED BY 'Mudar_Esta_Pass_2026!';
 GRANT SELECT, INSERT, UPDATE, DELETE ON seguranca_web.* TO 'segweb_app'@'localhost';
 FLUSH PRIVILEGES;
